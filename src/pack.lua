@@ -453,13 +453,33 @@ local function _remove(args)
 	printError("Package not found")
 end
 
+local function _add_source(args)
+	if not args[3] then
+		printError("Usage: add-source <name> <url>")
+		return
+	end
+
+	if not http.checkURL(args[3]) then
+		printError("Bad url")
+		return
+	end
+
+	local _f = fs.open(sources_list_path, "a")
+	_f.write("\n"..args[2].." "..args[3])
+	_f.close()
+
+	print("Added:", args[2], args[3])
+	fetch_sources()
+end
+
 local commands = {
     {"install", "install packages", _install},
     {"show", "show package details", _show},
     {"search", "search in package descriptions", _search},
     {"remove", "remove packages", _remove},
     {"list", "list packages based on package names", _list},
-	{"fetch", "updats the sources", fetch_sources}
+	{"fetch", "updats the sources", fetch_sources},
+	{"add-source", "add asorce to the sources file", _add_source}
 }
 
 local function _list_commands()
