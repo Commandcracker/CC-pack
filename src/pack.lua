@@ -406,7 +406,7 @@ local function _install(args)
 		for name,p in pairs(Package) do
 			if name == args[2] then
 				if question("install "..source.."/"..name) then
-					install_packag(source.." "..name, p)
+					install_packag(source.."/"..name, p)
 				end
 				return
 			end
