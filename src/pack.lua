@@ -333,6 +333,14 @@ local function install_packag(name, packag)
     end
 end
 
+local function is_packag_installed(name)
+	return fs.exists(install_path.."/"..name)
+end
+
+local function remove_packag(name)
+	fs.delete(install_path.."/"..name)
+end
+
 if not fs.exists(sources_list_path) then
     _f = fs.open(sources_list_path, "w")
 	_f.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
@@ -368,6 +376,7 @@ local function _show(args)
 			if name == args[2] then
 				print("Package:", name)
 				print("Url:", p["url"])
+				print("Installed:", is_packag_installed(source.."/"..name))
 				return
 			end
 		end
@@ -405,6 +414,10 @@ local function _install(args)
     for source,Package in pairs(load_packages()) do
 		for name,p in pairs(Package) do
 			if name == args[2] then
+				if is_packag_installed(source.."/"..name) then
+					printError("Package already installed")
+					return
+				end
 				if question("install "..source.."/"..name) then
 					install_packag(source.."/"..name, p)
 				end
@@ -416,11 +429,35 @@ local function _install(args)
     printError("Package not found")
 end
 
+local function _remove(args)
+	if not args[2] then
+		printError("Usage: remove <package>")
+		return
+	end
+
+	for source,Package in pairs(load_packages()) do
+		for name,p in pairs(Package) do
+			if name == args[2] then
+				if not is_packag_installed(source.."/"..name) then
+					printError("Package not installed")
+					return
+				end
+				if question("remove "..source.."/"..name) then
+					remove_packag(source.."/"..name)
+				end
+				return
+			end
+		end
+	end
+
+	printError("Package not found")
+end
+
 local commands = {
     {"install", "install packages", _install},
     {"show", "show package details", _show},
     {"search", "search in package descriptions", _search},
-    {"remove", "remove packages"},
+    {"remove", "remove packages", _remove},
     {"list", "list packages based on package names", _list},
 	{"fetch", "updats the sources", fetch_sources}
 }
