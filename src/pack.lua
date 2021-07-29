@@ -280,21 +280,14 @@ local function question(question)
 end
 
 -- Vars
-local installation_path = "/etc/pack"
-local sources_list_path = installation_path.."/sources.list"
-local sources_list_d_path = installation_path.."/sources.list.d"
+local pack_path = "/etc/pack"
+local sources_list_path = pack_path.."/sources.list"
+local sources_list_d_path = pack_path.."/sources.list.d"
+local install_path = pack_path.."/packages"
 
 -- sources
 local function load_sources()
-    local sources_path = "/etc/pack/sources.list"
-    local sources_file = io.open(sources_path, "r")
-    
-    if not sources_file then
-        _f = fs.open(sources_path, "w")
-		_f.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
-		_f.close()
-        sources_file = io.open(sources_path, "r")
-    end
+    local sources_file = io.open(sources_list_path, "r")
     
     local line = sources_file:read()
     local sources = {}
@@ -309,7 +302,9 @@ end
 
 local function fetch_sources()
 	local sources = load_sources()
+	print("Fetching")
 	for _,source in pairs(sources) do
+		print(source[1])
 		dowload(source[2], sources_list_d_path.."/"..source[1])
 	end
 end
@@ -332,12 +327,17 @@ local function get_packag(source, package)
 end
 ]]
 
-local install_path = "/etc/pack/packages"
-
 local function install_packag(name, packag)
     for k,v in pairs(packag["files"]) do
         dowload(v, install_path.."/"..name.."/"..k)
     end
+end
+
+if fs.exists(sources_list_path) then
+    _f = fs.open(sources_list_path, "w")
+	_f.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
+	_f.close()
+	fetch_sources()
 end
 
 --[[
