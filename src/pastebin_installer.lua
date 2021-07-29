@@ -11,7 +11,7 @@ local function get(url)
     end
 end
 
-local url = "https://raw.githubusercontent.com/Commandcracker/oculusos/master/CC-pack/installer.lua"
+local url = "https://raw.githubusercontent.com/Commandcracker/oculusos/master/CC-pack/build/installer.lua"
 local tArgs = { ... }
 local res = get(url)
 
