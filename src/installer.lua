@@ -38,11 +38,6 @@ local function dowload(url, path)
     file.close()
 end
 
-if not question("Install pack") then
-	printError("Abort.")
-    return
-end
-
 local function get(url)
     local response = http.get(url)
     
@@ -76,6 +71,4 @@ end
 
 if question("install startup") then
     dowload("https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/startup.lua", "/startup")
-else
-    print("add:", get("https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/startup.lua"), "to your startup")
 end
