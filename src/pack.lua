@@ -239,12 +239,28 @@ local function split(string, delimiter)
     return result
 end
 
+local function dowload(url, path)
+    response = http.get(url)
+    response = response.readAll()
+    file = fs.open(path, "w")
+    file.write(response)
+    file.close()
+end
+
+-- Vars
+local installation_path = "/etc/pack"
+local sources_list_path = installation_path.."/sources.list"
+local sources_list_d_path = installation_path.."/sources.list.d"
+
+-- sources
 local function load_sources()
     local sources_path = "/etc/pack/sources.list"
     local sources_file = io.open(sources_path, "r")
     
     if not sources_file then
-        fs.open(sources_path, "w").close()
+        _f = fs.open(sources_path, "w")
+		_f.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
+		_f.close()
         sources_file = io.open(sources_path, "r")
     end
     
@@ -259,11 +275,28 @@ local function load_sources()
     return sources
 end
 
+local function fetch_sources()
+	local sources = load_sources()
+	for _,source in pairs(sources) do
+		dowload(source[2], sources_list_d_path.."/"..source[1])
+	end
+end
+
+-- packages
+local install_path = "/etc/pack/packages"
+
 local function get_packag(url)
     response = http.get(url)
     response = response.readAll()
     response = decode(response)
-    print(response["url"])
+    return response
+end
+
+local function install_packag(url, name)
+    packag = get_packag(url)
+    for k,v in pairs(packag["files"]) do
+        dowload(v["url"], install_path.."/"..name.."/"..v["path"])
+    end
 end
 
 --[[
