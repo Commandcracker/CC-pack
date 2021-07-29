@@ -247,6 +247,38 @@ local function dowload(url, path)
     file.close()
 end
 
+local function question(question)
+    if question == nil then else
+        if term.isColor() then
+            term.setTextColour(colors.orange)
+        end
+        term.write(question.."? [")
+        if term.isColor() then
+            term.setTextColour(colors.lime)
+        end
+        term.write('Y')
+        if term.isColor() then
+            term.setTextColour(colors.orange)
+        end
+        term.write('/')
+        if term.isColor() then
+            term.setTextColour(colors.red)
+        end
+        term.write('n')
+        if term.isColor() then
+            term.setTextColour(colors.orange)
+        end
+        term.write("] ")
+        term.setTextColour(colors.white)
+    end
+    local input = string.lower(string.sub(read(),1,1))
+    if input == 'y' or input == 'j' or input == '' then
+        return true
+    else 
+        return false
+    end
+end
+
 -- Vars
 local installation_path = "/etc/pack"
 local sources_list_path = installation_path.."/sources.list"
@@ -283,19 +315,28 @@ local function fetch_sources()
 end
 
 -- packages
-local install_path = "/etc/pack/packages"
-
-local function get_packag(url)
-    response = http.get(url)
-    response = response.readAll()
-    response = decode(response)
-    return response
+local function load_packages()
+	packages = {}
+    for _,p in pairs(fs.list(sources_list_d_path)) do
+		_f = fs.open(sources_list_d_path.."/"..p,"r")
+		packages[p] = decode(_f.readAll())
+		_f.close()
+	end
+    return packages
 end
 
-local function install_packag(url, name)
-    packag = get_packag(url)
+--[[
+local function get_packag(source, package)
+    packages = load_packages()
+	return packages[source][package]
+end
+]]
+
+local install_path = "/etc/pack/packages"
+
+local function install_packag(name, packag)
     for k,v in pairs(packag["files"]) do
-        dowload(v["url"], install_path.."/"..name.."/"..v["path"])
+        dowload(v, install_path.."/"..name.."/"..k)
     end
 end
 
@@ -309,8 +350,10 @@ end
 ]]
 
 local function _list()
-    for k,v in pairs(load_sources()) do
-        print(v[1])
+    for source,Package in pairs(load_packages()) do
+		for name,_ in pairs(Package) do
+			print(source.."/"..name)
+		end
     end
 end
 
@@ -319,37 +362,62 @@ local function _show(args)
         printError("Usage: show <package>")
         return
     end
-    sources = load_sources()
-    for k,v in pairs(sources) do
-        if v[1] == args[2] then
-            print("Package:", v[1])
-            print("Url:", v[2])
-            return
-        end
+
+    for source,Package in pairs(load_packages()) do
+		for name,p in pairs(Package) do
+			if name == args[2] then
+				print("Package:", name)
+				print("Url:", p["url"])
+				return
+			end
+		end
     end
+
     printError("Package not found")
 end
 
 local function _search(args)
     if not args[2] then
-        printError("Usage: show <package>")
+        printError("Usage: search <package>")
         return
     end
-    sources = load_sources()
     local sucsess = false
-    for k,v in pairs(sources) do
-        if string.match(v[1], args[2]) then
-            print(v[1])
-            sucsess = true
-        end
+
+	for source,Package in pairs(load_packages()) do
+		for name,_ in pairs(Package) do
+			if string.match(name, args[2]) then
+				print(source.."/"..name)
+				sucsess = true
+			end
+		end
     end
     if not sucsess then
         printError("No matching packages found")
     end
 end
 
+local function _install(args)
+    if not args[2] then
+        printError("Usage: install <package>")
+        return
+    end
+
+    for source,Package in pairs(load_packages()) do
+		for name,p in pairs(Package) do
+			if name == args[2] then
+				if question("install "..source.."/"..name) then
+					install_packag(source.." "..name, p)
+				end
+				return
+			end
+		end
+    end
+
+    printError("Package not found")
+end
+
 local commands = {
-    {"install", "install packages"},
+    {"install", "install packages", _install},
     {"show", "show package details", _show},
     {"search", "search in package descriptions", _search},
     {"remove", "remove packages"},

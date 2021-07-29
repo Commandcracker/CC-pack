@@ -21,17 +21,11 @@ local a=http.get("https://raw.githubusercontent.com/Commandcracker/CC-pack/maste
 
 ```json
 {
-    "name": "pack",
-    "version_mode": "github",
-    "version": "https://api.github.com/repos/Commandcracker/CC-pack/git/refs/heads/master",
-    "description": "Pack is a Package manager!",
-    "url": "https://github.com/Commandcracker/CC-pack",
-    "files": [
-        {
-            "type": "bin",
-            "url": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/pack.lua"
+    "pack-name": {
+        "files": {
+            "pack": "raw file url"
         }
-    ]
+    }
 }
 ```
 
