@@ -71,4 +71,13 @@ end
 
 if question("install startup") then
     dowload("https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/startup.lua", "/startup")
+    if question("Reboot now") then
+        print()
+        if term.isColor() then
+            term.setTextColor(colors.orange)
+        end
+        print("Rebooting computer")
+        sleep(1)
+        os.reboot()
+    end
 end
