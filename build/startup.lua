@@ -1,0 +1,1 @@
+local a="/etc/pack/packages"for b,c in pairs(fs.list(a))do for b,d in pairs(fs.list(a.."/"..c))do shell.setPath(shell.path()..":"..a.."/"..c.."/"..d)end end
