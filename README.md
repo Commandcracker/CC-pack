@@ -4,17 +4,25 @@ Pack is a Package manager for [ComputerCraft](https://github.com/dan200/Computer
 
 ## Installation
 
-### ComputerCraft 1.77+ and ComputerCraft Tweaked
+### ComputerCraft 1.78+ and ComputerCraft Tweaked
 
 ```bash
-wget https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/pack.lua pack
+pastebin run gTMnqnRk
+```
+
+### ComputerCraft 1.77
+
+```bash
+wget https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/installer.lua installer
+installer
 ```
 
 ### ComputerCraft 1.76-
 
 ```lua
 lua
-local a=http.get("https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/pack.lua")local b=fs.open(shell.resolve("pack"),"w")b.write(a.readAll())b.close()a.close()exit()
+local a=http.get("https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/installer.lua")local b=fs.open(shell.resolve("installer"),"w")b.write(a.readAll())b.close()a.close()exit()
+installer
 ```
 
 ## Examples
