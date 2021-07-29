@@ -333,7 +333,7 @@ local function install_packag(name, packag)
     end
 end
 
-if fs.exists(sources_list_path) then
+if not fs.exists(sources_list_path) then
     _f = fs.open(sources_list_path, "w")
 	_f.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
 	_f.close()
