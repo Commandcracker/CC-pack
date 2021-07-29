@@ -421,7 +421,8 @@ local commands = {
     {"show", "show package details", _show},
     {"search", "search in package descriptions", _search},
     {"remove", "remove packages"},
-    {"list", "list packages based on package names", _list}
+    {"list", "list packages based on package names", _list},
+	{"fetch", "updats the sources", fetch_sources}
 }
 
 local function _list_commands()
