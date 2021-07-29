@@ -6,7 +6,7 @@
     "url": "https://github.com/Commandcracker/CC-pack",
     "files": [
         {
-            "type": "bin",
+            "path": "pack",
             "url": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/pack.lua"
         }
     ]
