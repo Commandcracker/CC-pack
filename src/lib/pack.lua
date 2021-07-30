@@ -1,3 +1,5 @@
+local pack = {}
+local json = {}
 --[[
        ___                  
       |_  |                 
@@ -22,7 +24,7 @@ local function isArray(t)
 end
 
 local whites = {['\n']=true; ['\r']=true; ['\t']=true; [' ']=true; [',']=true; [':']=true}
-function removeWhite(str)
+function json.removeWhite(str)
 	while whites[str:sub(1, 1)] do
 		str = str:sub(2)
 	end
@@ -89,11 +91,11 @@ local function encodeCommon(val, pretty, tabLevel, tTracking)
 	return str
 end
 
-function encode(val)
+function json.encode(val)
 	return encodeCommon(val, false, 0, {})
 end
 
-function encodePretty(val)
+function json.encodePretty(val)
 	return encodeCommon(val, true, 0, {})
 end
 
@@ -104,30 +106,30 @@ for k,v in pairs(controls) do
 	decodeControls[v] = k
 end
 
-function parseBoolean(str)
+function json.parseBoolean(str)
 	if str:sub(1, 4) == "true" then
-		return true, removeWhite(str:sub(5))
+		return true, json.removeWhite(str:sub(5))
 	else
-		return false, removeWhite(str:sub(6))
+		return false, json.removeWhite(str:sub(6))
 	end
 end
 
-function parseNull(str)
-	return nil, removeWhite(str:sub(5))
+function json.parseNull(str)
+	return nil, json.removeWhite(str:sub(5))
 end
 
 local numChars = {['e']=true; ['E']=true; ['+']=true; ['-']=true; ['.']=true}
-function parseNumber(str)
+function json.parseNumber(str)
 	local i = 1
 	while numChars[str:sub(i, i)] or tonumber(str:sub(i, i)) do
 		i = i + 1
 	end
 	local val = tonumber(str:sub(1, i - 1))
-	str = removeWhite(str:sub(i))
+	str = json.removeWhite(str:sub(i))
 	return val, str
 end
 
-function parseString(str)
+function json.parseString(str)
 	str = str:sub(2)
 	local s = ""
 	while str:sub(1,1) ~= "\"" do
@@ -144,74 +146,74 @@ function parseString(str)
 
 		s = s .. next
 	end
-	return s, removeWhite(str:sub(2))
+	return s, json.removeWhite(str:sub(2))
 end
 
-function parseArray(str)
-	str = removeWhite(str:sub(2))
+function json.parseArray(str)
+	str = json.removeWhite(str:sub(2))
 
 	local val = {}
 	local i = 1
 	while str:sub(1, 1) ~= "]" do
 		local v = nil
-		v, str = parseValue(str)
+		v, str = json.parseValue(str)
 		val[i] = v
 		i = i + 1
-		str = removeWhite(str)
+		str = json.removeWhite(str)
 	end
-	str = removeWhite(str:sub(2))
+	str = json.removeWhite(str:sub(2))
 	return val, str
 end
 
-function parseObject(str)
-	str = removeWhite(str:sub(2))
+function json.parseObject(str)
+	str = json.removeWhite(str:sub(2))
 
 	local val = {}
 	while str:sub(1, 1) ~= "}" do
 		local k, v = nil, nil
-		k, v, str = parseMember(str)
+		k, v, str = json.parseMember(str)
 		val[k] = v
-		str = removeWhite(str)
+		str = json.removeWhite(str)
 	end
-	str = removeWhite(str:sub(2))
+	str = json.removeWhite(str:sub(2))
 	return val, str
 end
 
-function parseMember(str)
+function json.parseMember(str)
 	local k = nil
-	k, str = parseValue(str)
+	k, str = json.parseValue(str)
 	local val = nil
-	val, str = parseValue(str)
+	val, str = json.parseValue(str)
 	return k, val, str
 end
 
-function parseValue(str)
+function json.parseValue(str)
 	local fchar = str:sub(1, 1)
 	if fchar == "{" then
-		return parseObject(str)
+		return json.parseObject(str)
 	elseif fchar == "[" then
-		return parseArray(str)
+		return json.parseArray(str)
 	elseif tonumber(fchar) ~= nil or numChars[fchar] then
-		return parseNumber(str)
+		return json.parseNumber(str)
 	elseif str:sub(1, 4) == "true" or str:sub(1, 5) == "false" then
-		return parseBoolean(str)
+		return json.parseBoolean(str)
 	elseif fchar == "\"" then
-		return parseString(str)
+		return json.parseString(str)
 	elseif str:sub(1, 4) == "null" then
-		return parseNull(str)
+		return json.parseNull(str)
 	end
 	return nil
 end
 
-function decode(str)
-	str = removeWhite(str)
-	t = parseValue(str)
+function json.decode(str)
+	str = json.removeWhite(str)
+	t = json.parseValue(str)
 	return t
 end
 
-function decodeFromFile(path)
+function json.decodeFromFile(path)
 	local file = assert(fs.open(path, "r"))
-	local decoded = decode(file.readAll())
+	local decoded = json.decode(file.readAll())
 	file.close()
 	return decoded
 end
@@ -223,7 +225,7 @@ sources_list_path = pack_path.."/sources.list"
 sources_list_d_path = pack_path.."/sources.list.d"
 
 -- functions
-function split(string, delimiter)
+local function split(string, delimiter)
     local result = { }
     local from = 1
     local delim_from, delim_to = string.find( string, delimiter, from )
@@ -236,16 +238,16 @@ function split(string, delimiter)
     return result
 end
 
-function download(url, path)
-    response = http.get(url)
-    response = response.readAll()
-    file = fs.open(path, "w")
-    file.write(response)
+local function download(url, path)
+    local request = http.get(url)
+    local file = fs.open(path, "w")
+    file.write(request.readAll())
     file.close()
+    request.close()
 end
 
 -- Sources Stuff
-function getSources()
+function pack.getSources()
     local sources_file = io.open(sources_list_path, "r")
     
     local line = sources_file:read()
@@ -259,7 +261,7 @@ function getSources()
     return sources
 end
 
-function fetchSources(cli)
+function pack.fetchSources(cli)
 	local sources = getSources()
     if cli then
         print("Fetching")
@@ -272,15 +274,17 @@ function fetchSources(cli)
 	end
 end
 
-function fixSources(cli)
-    local sources_list = fs.open(sources_list_path, "w")
-	sources_list.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
-	sources_list.close()
-	fetchSources(cli)
+function pack.fixSources(cli)
+    if not fs.exists(sources_list_path) then
+        local sources_list = fs.open(sources_list_path, "w")
+        sources_list.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
+        sources_list.close()
+        fetchSources(cli)
+    end
 end
 
 -- Package Stuff
-function loadPackage(path)
+function pack.loadPackage(path)
     for _,file_name in pairs(fs.list(path)) do
         if file_name == "bin" or file_name == "programs" then
             for _, programm in pairs(fs.list(path.."/"..file_name)) do
@@ -302,7 +306,7 @@ function loadPackage(path)
     end
 end
 
-function loadPackages()
+function pack.loadPackages()
     for _,source_folder_name in pairs(fs.list(packages_path)) do
         for _,package_folder_name in pairs(fs.list(packages_path.."/"..source_folder_name)) do
             loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
@@ -310,27 +314,30 @@ function loadPackages()
     end
 end
 
-function installPackage(name, packag)
+function pack.installPackage(name, packag)
     for k,v in pairs(packag["files"]) do
         download(v, packages_path.."/"..name.."/"..k)
     end
     loadPackage(packages_path.."/"..name)
 end
 
-function isPackageInstalled(name)
+function pack.isPackageInstalled(name)
 	return fs.exists(packages_path.."/"..name)
 end
 
-function removePackage(name)
+function pack.removePackage(name)
 	fs.delete(packages_path.."/"..name)
 end
 
-function getPackages()
+function pack.getPackages()
 	packages = {}
     for _,source in pairs(fs.list(sources_list_d_path)) do
 		local source_file = fs.open(sources_list_d_path.."/"..source,"r")
-		packages[source] = decode(source_file.readAll())
+		packages[source] = json.decode(source_file.readAll())
 		source_file.close()
 	end
     return packages
 end
+
+pack.json = json
+return pack

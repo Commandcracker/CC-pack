@@ -49,8 +49,7 @@ end
 ]]
 
 if not pack then
-	printError("Pack lib not loaded!")
-	return
+	local pack = dofile(fs.getDir(shell.getRunningProgram()).."/".."lib/pack")
 end
 
 pack.fixSources(true)

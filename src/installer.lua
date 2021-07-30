@@ -32,11 +32,11 @@ local function question(_question)
 end
 
 local function download(url, path)
-    response = http.get(url)
-    response = response.readAll()
-    file = fs.open(path, "w")
-    file.write(response)
+    local request = http.get(url)
+    local file = fs.open(path, "w")
+    file.write(request.readAll())
     file.close()
+    request.close()
 end
 
 local function get(url)
@@ -52,18 +52,19 @@ local function get(url)
 end
 
 local function loadAPIFromURL(url, name)
-    api_path = "/tmp/"..name
-    apt_file = fs.open(api_path,"w")
+    local api_path = "/tmp/"..name
+    local apt_file = fs.open(api_path,"w")
     apt_file.write(get(url))
     apt_file.close()
-    os.loadAPI(api_path)
+    local api = dofile(api_path)
     fs.delete(api_path)
+    return api
 end
 
 -- cli
 local url_base = "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/"
 
-loadAPIFromURL(url_base.."lib/pack.lua", "pack")
+_ENV.pack = loadAPIFromURL(url_base.."lib/pack.lua")
 
 local url = url_base.."bin/pack.lua"
 local tArgs = {

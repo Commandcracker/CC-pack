@@ -1,2 +1,2 @@
-os.loadAPI("/etc/pack/packages/pack/pack/lib/pack")
+local pack = dofile("/etc/pack/packages/pack/pack/lib/pack")
 pack.loadPackages()

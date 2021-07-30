@@ -1,1 +1,1 @@
-os.loadAPI("/etc/pack/packages/pack/pack/lib/pack")pack.loadPackages()
+local a=dofile("/etc/pack/packages/pack/pack/lib/pack")a.loadPackages()
