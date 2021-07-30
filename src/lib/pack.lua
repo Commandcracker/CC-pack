@@ -264,13 +264,22 @@ end
 function pack.fetchSources(cli)
 	local sources = pack.getSources()
     if cli then
-        print("Fetching")
+		if term.isColor() then
+			term.setTextColour(colors.lime)
+		end
+		print("Fetching")
+		if term.isColor() then
+			term.setTextColour(colors.blue)
+		end
     end
 	for _,source in pairs(sources) do
         if cli then
 		    print(source[1])
         end
 		download(source[2], sources_list_d_path.."/"..source[1])
+	end
+	if cli then
+		term.setTextColour(colors.white)
 	end
 end
 
@@ -285,6 +294,13 @@ end
 
 function pack.addSource(namespace,url,cli)
 
+	for _,source in pairs(pack.getSources()) do
+		if source[1] == namespace then
+			printError("Namespace already exists")
+			return
+		end
+	end
+
 	if not http.checkURL(url) then
 		if cli then
 			printError("Bad url")
@@ -297,7 +313,19 @@ function pack.addSource(namespace,url,cli)
 	file.close()
 
 	if cli then
-		print("Added:", namespace, url)
+		if term.isColor() then
+			term.setTextColour(colors.lime)
+		end
+		print("Added:")
+		if term.isColor() then
+			term.setTextColour(colours.lightGrey )
+		end
+		print(namespace)
+		if term.isColor() then
+			term.setTextColour(colors.blue)
+		end
+		print(url)
+		term.setTextColour(colors.white)
 	end
 	pack.fetchSources(cli)
 end
@@ -332,9 +360,20 @@ function pack.loadPackages(shell)
 end
 
 function pack.installPackage(name, packag, shell)
+	if term.isColor() then
+		term.setTextColour(colors.lime)
+	end
+	print("Downloading")
+	if term.isColor() then
+		term.setTextColour(colors.blue)
+	end
+
     for k,v in pairs(packag["files"]) do
+		print(packages_path.."/"..name.."/"..k)
         download(v, packages_path.."/"..name.."/"..k)
     end
+
+	term.setTextColour(colors.white)
     pack.loadPackage(packages_path.."/"..name, shell)
 end
 

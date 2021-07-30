@@ -8,5 +8,15 @@
             "bin/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/bin/pack.lua",
             "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/lib/pack.lua"
         }
+    },
+    "pack-src": {
+        "version_mode": "github",
+        "version": "https://api.github.com/repos/Commandcracker/CC-pack/git/refs/heads/master",
+        "description": "Pack is a Package manager!",
+        "url": "https://github.com/Commandcracker/CC-pack",
+        "files": {
+            "bin/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/bin/pack.lua",
+            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/lib/pack.lua"
+        }
     }
 }

@@ -48,18 +48,19 @@ end
      \____/\_____/\___/ 
 ]]
 
-local pack = nil or pack
-
-if not pack then
-	pack = dofile("/"..fs.getDir(shell.getRunningProgram()).."/../".."lib/pack")
-end
+local pack = dofile("/"..fs.getDir(shell.getRunningProgram()).."/../".."lib/pack")
 
 pack.fixSources(true)
 
 local function _list()
     for source,Package in pairs(pack.getPackages()) do
 		for name,_ in pairs(Package) do
-			print(source.."/"..name)
+            term.setTextColour(colours.lightGrey)
+            write(source)
+            term.setTextColour(colours.grey)
+            write("/")
+            term.setTextColour(colors.white)
+            print(name)
 		end
     end
 end
@@ -73,9 +74,34 @@ local function _show(args)
     for source,Package in pairs(pack.getPackages()) do
 		for name,p in pairs(Package) do
 			if name == args[2] then
-				print("Package:", name)
-				print("Url:", p["url"])
-				print("Installed:", pack.isPackageInstalled(source.."/"..name))
+                if term.isColor() then term.setTextColour(colors.orange)end
+                write("Package: ")
+                if term.isColor() then term.setTextColour(colors.white)end
+				print(name)
+
+                if term.isColor() then term.setTextColour(colors.orange)end
+                write("Url: ")
+                if term.isColor() then
+                    if p["url"] then
+                        term.setTextColour(colors.blue)
+                    else
+                        term.setTextColour(colors.red)
+                    end
+                end
+                print(p["url"])
+
+                if term.isColor() then term.setTextColour(colors.orange)end
+                write("Installed: ")
+                local installed = pack.isPackageInstalled(source.."/"..name)
+                if term.isColor() then
+                    if installed then
+                        term.setTextColour(colors.lime)
+                    else
+                        term.setTextColour(colors.red)
+                    end
+                end
+				print(pack.isPackageInstalled(source.."/"..name))
+                term.setTextColour(colors.white)
 				return
 			end
 		end
@@ -94,7 +120,12 @@ local function _search(args)
 	for source,Package in pairs(pack.getPackages()) do
 		for name,_ in pairs(Package) do
 			if string.match(name, args[2]) then
-				print(source.."/"..name)
+                term.setTextColour(colours.lightGrey)
+                write(source)
+                term.setTextColour(colours.grey)
+                write("/")
+                term.setTextColour(colors.white)
+				print(name)
 				sucsess = true
 			end
 		end
