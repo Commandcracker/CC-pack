@@ -1,1 +1,1 @@
-local a=dofile("/etc/pack/packages/pack/pack/lib/pack")a.loadPackages(shell)
+dofile("/etc/pack/packages/pack/pack/lib/pack").loadPackages(shell)
