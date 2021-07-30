@@ -61,7 +61,7 @@ local function loadAPIFromURL(url, name)
 
     local tEnv = {}
     setmetatable( tEnv, { __index = _G } )
-    local fnAPI, err = loadstring( get(url), tEnv )
+    local fnAPI, err = load( get(url), tEnv )
     if fnAPI then
         local ok, err = pcall( fnAPI )
         if not ok then
