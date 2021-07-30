@@ -55,6 +55,7 @@ local function loadAPIFromURL(url, name)
     api_path = "/tmp/"..name
     apt_file = fs.open(api_path,"w")
     apt_file.write(get(url))
+    apt_file.close()
     os.loadAPI(api_path)
     fs.delete(api_path)
 end
