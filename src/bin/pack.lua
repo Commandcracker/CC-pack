@@ -117,7 +117,7 @@ local function _install(args)
 					return
 				end
 				if question("install "..source.."/"..name) then
-					pack.isPackageInstalled(source.."/"..name, p)
+					pack.installPackage(source.."/"..name, p)
 				end
 				return
 			end
