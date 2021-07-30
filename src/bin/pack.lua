@@ -48,8 +48,10 @@ end
      \____/\_____/\___/ 
 ]]
 
+local pack = nil or pack
+
 if not pack then
-	local pack = dofile(fs.getDir(shell.getRunningProgram()).."/".."lib/pack")
+	pack = dofile("/"..fs.getDir(shell.getRunningProgram()).."/../".."lib/pack")
 end
 
 pack.fixSources(true)
@@ -116,7 +118,7 @@ local function _install(args)
 					return
 				end
 				if question("install "..source.."/"..name) then
-					pack.installPackage(source.."/"..name, p)
+					pack.installPackage(source.."/"..name, p, shell)
 				end
 				return
 			end

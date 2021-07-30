@@ -219,10 +219,10 @@ function json.decodeFromFile(path)
 end
 
 -- Vars
-pack_path = "/etc/pack"
-packages_path = pack_path.."/packages"
-sources_list_path = pack_path.."/sources.list"
-sources_list_d_path = pack_path.."/sources.list.d"
+local pack_path = "/etc/pack"
+local packages_path = pack_path.."/packages"
+local sources_list_path = pack_path.."/sources.list"
+local sources_list_d_path = pack_path.."/sources.list.d"
 
 -- functions
 local function split(string, delimiter)
@@ -284,15 +284,13 @@ function pack.fixSources(cli)
 end
 
 -- Package Stuff
-function pack.loadPackage(path)
+function pack.loadPackage(path, shell)
     for _,file_name in pairs(fs.list(path)) do
         if file_name == "bin" or file_name == "programs" then
-            for _, programm in pairs(fs.list(path.."/"..file_name)) do
-                shell.setPath(shell.path()..":"..path.."/"..file_name.."/"..programm)
-            end
+            shell.setPath(shell.path()..":"..path.."/"..file_name)
         elseif file_name == "lib" or file_name == "apis" then
             for _, lib in pairs(fs.list(path.."/"..file_name)) do
-                os.loadAPI(path.."/"..file_name.."/"..lib)
+                --os.loadAPI(path.."/"..file_name.."/"..lib)
             end
         elseif file_name == "startup" or "startup.lua" then
             if fs.isDir(path.."/"..file_name) then
@@ -306,19 +304,19 @@ function pack.loadPackage(path)
     end
 end
 
-function pack.loadPackages()
+function pack.loadPackages(shell)
     for _,source_folder_name in pairs(fs.list(packages_path)) do
         for _,package_folder_name in pairs(fs.list(packages_path.."/"..source_folder_name)) do
-            pack.loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
+            pack.loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name, shell)
         end
     end
 end
 
-function pack.installPackage(name, packag)
+function pack.installPackage(name, packag, shell)
     for k,v in pairs(packag["files"]) do
         download(v, packages_path.."/"..name.."/"..k)
     end
-    pack.loadPackage(packages_path.."/"..name)
+    pack.loadPackage(packages_path.."/"..name, shell)
 end
 
 function pack.isPackageInstalled(name)
