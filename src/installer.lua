@@ -64,7 +64,7 @@ local url_base = "https://raw.githubusercontent.com/Commandcracker/CC-pack/maste
 
 loadAPIFromURL(url_base.."lib/pack.lua", "pack")
 
-local url = url_base.."pack.lua"
+local url = url_base.."bin/pack.lua"
 local tArgs = {
     "install",
     "pack"
