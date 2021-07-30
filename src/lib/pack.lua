@@ -283,6 +283,25 @@ function pack.fixSources(cli)
     end
 end
 
+function pack.addSource(namespace,url,cli)
+
+	if not http.checkURL(url) then
+		if cli then
+			printError("Bad url")
+		end
+		return
+	end
+
+	local file = fs.open(sources_list_path, "a")
+	file.write("\n"..namespace.." "..url)
+	file.close()
+
+	if cli then
+		print("Added:", namespace, url)
+	end
+	pack.fetchSources(cli)
+end
+
 -- Package Stuff
 function pack.loadPackage(path, shell)
     for _,file_name in pairs(fs.list(path)) do
@@ -292,7 +311,7 @@ function pack.loadPackage(path, shell)
             for _, lib in pairs(fs.list(path.."/"..file_name)) do
                 --os.loadAPI(path.."/"..file_name.."/"..lib)
             end
-        elseif file_name == "startup" or "startup.lua" then
+        elseif file_name == "startup" or file_name == "startup.lua" then
             if fs.isDir(path.."/"..file_name) then
                 for _, startup in pairs(fs.list(path.."/"..file_name)) do
                     shell.run(path.."/"..file_name.."/"..startup)

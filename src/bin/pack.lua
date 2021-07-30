@@ -158,17 +158,7 @@ local function _add_source(args)
 		return
 	end
 
-	if not http.checkURL(args[3]) then
-		printError("Bad url")
-		return
-	end
-
-	local _f = fs.open(sources_list_path, "a")
-	_f.write("\n"..args[2].." "..args[3])
-	_f.close()
-
-	print("Added:", args[2], args[3])
-	pack.fetchSources(true)
+    pack.addSource(args[2], args[3], true)
 end
 
 local function _fetch_sources()
