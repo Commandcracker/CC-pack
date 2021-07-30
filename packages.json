@@ -5,7 +5,8 @@
         "description": "Pack is a Package manager!",
         "url": "https://github.com/Commandcracker/CC-pack",
         "files": {
-            "pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/pack.lua"
+            "bin/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/bin/pack.lua",
+            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/lib/pack.lua"
         }
     }
 }
