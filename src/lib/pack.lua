@@ -305,9 +305,7 @@ end
 function loadPackages()
     for _,source_folder_name in pairs(fs.list(packages_path)) do
         for _,package_folder_name in pairs(fs.list(packages_path.."/"..source_folder_name)) do
-            if source_folder_name.."/"..package_folder_name ~= "pack/pack" then
-                loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
-            end
+            loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
         end
     end
 end
@@ -316,6 +314,7 @@ function installPackage(name, packag)
     for k,v in pairs(packag["files"]) do
         download(v, packages_path.."/"..name.."/"..k)
     end
+    loadPackage(packages_path.."/"..name)
 end
 
 function isPackageInstalled(name)
