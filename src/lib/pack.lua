@@ -262,7 +262,7 @@ function pack.getSources()
 end
 
 function pack.fetchSources(cli)
-	local sources = getSources()
+	local sources = pack.getSources()
     if cli then
         print("Fetching")
     end
@@ -309,7 +309,7 @@ end
 function pack.loadPackages()
     for _,source_folder_name in pairs(fs.list(packages_path)) do
         for _,package_folder_name in pairs(fs.list(packages_path.."/"..source_folder_name)) do
-            loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
+            pack.loadPackage(packages_path.."/"..source_folder_name.."/"..package_folder_name)
         end
     end
 end
@@ -318,7 +318,7 @@ function pack.installPackage(name, packag)
     for k,v in pairs(packag["files"]) do
         download(v, packages_path.."/"..name.."/"..k)
     end
-    loadPackage(packages_path.."/"..name)
+    pack.loadPackage(packages_path.."/"..name)
 end
 
 function pack.isPackageInstalled(name)
