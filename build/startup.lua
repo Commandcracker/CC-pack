@@ -1,1 +1,1 @@
-dofile("/etc/pack/packages/pack/pack/lib/pack").loadPackages(shell)
+local a="/etc/pack/packages/pack/"local b=a.."pack-src/lib/pack"local c=a.."pack/lib/pack"if fs.exists(b)then dofile(b).loadPackages(shell)elseif fs.exists(c)then dofile(c).loadPackages(shell)end
