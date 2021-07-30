@@ -1,25 +1,21 @@
 -- functions
+local function setTextColour(color)
+    if term.isColor() then
+        term.setTextColour(color)
+    end
+end
+
 local function question(_question)
     if _question == nil then else
-        if term.isColor() then
-            term.setTextColour(colors.orange)
-        end
+        setTextColour(colors.orange)
         term.write(_question.."? [")
-        if term.isColor() then
-            term.setTextColour(colors.lime)
-        end
+        setTextColour(colors.lime)
         term.write('Y')
-        if term.isColor() then
-            term.setTextColour(colors.orange)
-        end
+        setTextColour(colors.orange)
         term.write('/')
-        if term.isColor() then
-            term.setTextColour(colors.red)
-        end
+        setTextColour(colors.red)
         term.write('n')
-        if term.isColor() then
-            term.setTextColour(colors.orange)
-        end
+        setTextColour(colors.orange)
         term.write("] ")
         term.setTextColour(colors.white)
     end
@@ -32,63 +28,59 @@ local function question(_question)
 end
 
 local function download(url, path)
-    local request = http.get(url)
-    local file = fs.open(path, "w")
-    file.write(request.readAll())
-    file.close()
-    request.close()
-end
-
-local function get(url)
-    local response = http.get(url)
-    
-    if response then
-        local sResponse = response.readAll()
-        response.close()
-        return sResponse
+    local request, err = http.get(url)
+    if request then
+        local file = fs.open(path, "w")
+        file.write(request.readAll())
+        file.close()
+        request.close()
     else
-        print( "Failed." )
+        printError("Faild to download: "..url)
+        printError(err)
     end
 end
 
 local function loadAPIFromURL(url, name)
     local api_path = "/tmp/"..name
-    local apt_file = fs.open(api_path,"w")
-    apt_file.write(get(url))
-    apt_file.close()
+    download(url, api_path)
     local api = dofile(api_path)
     fs.delete(api_path)
     return api
 end
 
--- cli
-local url_base = "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/"
+-- installer
 
-_ENV.pack = loadAPIFromURL(url_base.."lib/pack.lua", "pack")
-
-local url = url_base.."bin/pack.lua"
-local tArgs = {
-    "install",
-    "pack"
-}
-local res = get(url)
-
-if res then
-    local func, err = load(res, url, "t", _ENV)
-    if not func then
-        printError( err )
-        return
-    end
-    local success, msg = pcall(func, table.unpack(tArgs, 1))
-    if not success then
-        printError( msg )
-    end
+if not http then
+    printError("pack requires the http API")
+    printError("Set http_enable to true in ComputerCraft.cfg")
+    return
 end
 
-if fs.exists("/startup") then
-    if question("Replace startup") then
-        download(url_base.."startup.lua", "/startup")
+local url_base = "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/"
+local pack = loadAPIFromURL(url_base.."lib/pack.lua", "pack")
+
+if question("install pack") then
+    pack.fixSources(false)
+
+    for source,Package in pairs(pack.getPackages()) do
+        for name,p in pairs(Package) do
+            if name == "pack" then
+                if pack.isPackageInstalled(source.."/"..name) then
+                    printError("Pack is already installed")
+                    return
+                end
+                pack.installPackage(source.."/"..name, p, shell)
+                if fs.exists("/startup") then
+                    if question("Replace startup") then
+                        download(url_base.."startup.lua", "/startup")
+                    end
+                else
+                    download(url_base.."startup.lua", "/startup")
+                end
+                return
+            end
+        end
     end
-else
-    download(url_base.."startup.lua", "/startup")
+
+    printError("Faild to install pack")
 end
