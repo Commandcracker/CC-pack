@@ -92,13 +92,3 @@ if fs.exists("/startup") then
 else
     download(url_base.."startup.lua", "/startup")
 end
-
-if question("Reboot now") then
-    print()
-    if term.isColor() then
-        term.setTextColor(colors.orange)
-    end
-    print("Rebooting computer")
-    sleep(1)
-    os.reboot()
-end
