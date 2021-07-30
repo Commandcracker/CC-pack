@@ -279,7 +279,7 @@ function pack.fixSources(cli)
         local sources_list = fs.open(sources_list_path, "w")
         sources_list.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
         sources_list.close()
-        fetchSources(cli)
+        pack.fetchSources(cli)
     end
 end
 
