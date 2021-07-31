@@ -41,7 +41,9 @@ pack's [pack.json](pack.json)
 
 ## Third Party Libraries
 
-- [Json](https://pastebin.com/4nRg9CHU) by [ElvishJerricco](https://pastebin.com/u/ElvishJerricco)
+| Library                               | Maintainer                                              |
+|---------------------------------------|---------------------------------------------------------|
+| [Json](https://pastebin.com/4nRg9CHU) | [ElvishJerricco](https://pastebin.com/u/ElvishJerricco) |
 
 ## Building
 
