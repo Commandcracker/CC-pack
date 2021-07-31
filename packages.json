@@ -6,7 +6,8 @@
         "url": "https://github.com/Commandcracker/CC-pack",
         "files": {
             "bin/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/bin/pack.lua",
-            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/lib/pack.lua"
+            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/lib/pack.lua",
+            "startup": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/build/startup/startup.lua"
         }
     },
     "pack-src": {
@@ -16,7 +17,8 @@
         "url": "https://github.com/Commandcracker/CC-pack",
         "files": {
             "bin/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/bin/pack.lua",
-            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/lib/pack.lua"
+            "lib/pack": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/lib/pack.lua",
+            "startup": "https://raw.githubusercontent.com/Commandcracker/CC-pack/master/src/startup/startup.lua"
         }
     }
 }

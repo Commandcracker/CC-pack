@@ -1,0 +1,1 @@
+shell.setCompletionFunction(fs.getDir(shell.getRunningProgram()).."/bin/pack",function(shell,a,b)if a==2 then return end;return{"install","show","search","remove","list","fetch","add-source"}end)
