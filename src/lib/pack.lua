@@ -386,7 +386,7 @@ function pack.removePackage(name)
 end
 
 function pack.getPackages()
-	packages = {}
+	local packages = {}
     for _,source in pairs(fs.list(sources_list_d_path)) do
 		local source_file = fs.open(sources_list_d_path.."/"..source,"r")
 		packages[source] = json.decode(source_file.readAll())
