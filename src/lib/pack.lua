@@ -286,7 +286,7 @@ end
 function pack.fixSources(cli)
     if not fs.exists(sources_list_path) then
         local sources_list = fs.open(sources_list_path, "w")
-        sources_list.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/packages.json")
+        sources_list.write("pack https://raw.githubusercontent.com/Commandcracker/CC-pack/master/pack.json")
         sources_list.close()
         pack.fetchSources(cli)
     end
@@ -368,9 +368,9 @@ function pack.installPackage(name, packag, shell)
 		term.setTextColour(colors.blue)
 	end
 
-    for k,v in pairs(packag["files"]) do
-		print(packages_path.."/"..name.."/"..k)
-        download(v, packages_path.."/"..name.."/"..k)
+    for path,file in pairs(packag["files"]) do
+		print(packages_path.."/"..name.."/"..path)
+        download(file["url"], packages_path.."/"..name.."/"..path)
     end
 
 	term.setTextColour(colors.white)
@@ -389,7 +389,7 @@ function pack.getPackages()
 	local packages = {}
     for _,source in pairs(fs.list(sources_list_d_path)) do
 		local source_file = fs.open(sources_list_d_path.."/"..source,"r")
-		packages[source] = json.decode(source_file.readAll())
+		packages[source] = json.decode(source_file.readAll())["packages"]
 		source_file.close()
 	end
     return packages

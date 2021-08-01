@@ -25,19 +25,133 @@ local a=http.get("https://raw.githubusercontent.com/Commandcracker/CC-pack/maste
 installer
 ```
 
-## Examples
+## pack.json (Required)
+
+### Examples
 
 ```json
 {
-    "pack-name": {
-        "files": {
-            "pack": "raw file url"
+    "packages": {
+        "package-name-1": {
+            "files": {
+                "pastebin/myFile": {"url": "https://pastebin.com/raw/???"},
+                "gist/myFile": {"url": "https://gist.githubusercontent.com/???/???/raw"},
+                "github/myFile": {"url": "https://raw.githubusercontent.com/???/???/master/???"}
+            }
+        },
+        "package-name-2": {
+            "files": {
+                "pastebin/myFile": {"url": "https://pastebin.com/raw/???"},
+                "gist/myFile": {"url": "https://gist.githubusercontent.com/???/???/raw"},
+                "github/myFile": {"url": "https://raw.githubusercontent.com/???/???/master/???"}
+            }
         }
     }
 }
 ```
 
 pack's [pack.json](pack.json)
+
+### Package
+
+#### Example
+
+```json
+"package-name": {
+    "hardware": {
+        "color": true
+    },
+    "files": {
+        "pastebin/myFile": {"url": "https://pastebin.com/raw/???"},
+        "gist/myFile": {"url": "https://gist.githubusercontent.com/???/???/raw"},
+        "github/myFile": {"url": "https://raw.githubusercontent.com/???/???/master/???"}
+    }
+}
+```
+
+#### Files (Required)
+
+```json
+"files": {
+    "pastebin/myFile": {"url": "https://pastebin.com/raw/???"},
+    "gist/myFile": {"url": "https://gist.githubusercontent.com/???/???/raw"},
+    "github/myFile": {"url": "https://raw.githubusercontent.com/???/???/master/???"}
+}
+```
+
+##### Path Rules
+
+- Point to a file
+- Local path
+
+| ❌          | ✔️          |
+|-------------|------------|
+| /bin/myFile | bin/myFile |
+
+##### URL Rules
+
+- Must point to a raw file
+- Won't change
+
+| ❌                                                    | ✔️                                                   |
+|-------------------------------------------------------|-----------------------------------------------------|
+| https//pastebin.com/???                               | https//pastebin.com/raw/???                         |
+| https//github.com/???/???/blob/master/???             | https//raw.githubusercontent.com/???/???/master/??? |
+| https//gist.github.com/???/???                        | https//gist.githubusercontent.com/???/???/raw       |
+| https//gist.githubusercontent.com/???/???/raw/???/??? | https//gist.githubusercontent.com/???/???/raw       |
+
+##### Additional information
+
+If a file points to /`startup` or /`startup.lua` \
+it will run at startup
+
+If a file points to /`bin/myProgram` \
+it will be added to the shell's path
+
+if you want to get your local path use
+
+```lua
+local path = fs.getDir(shell.getRunningProgram())
+```
+
+if you want auto-completion \
+do something like this in your `startup`
+
+```lua
+shell.setCompletionFunction(
+    fs.getDir(shell.getRunningProgram()).."/bin/myprogram", 
+    function(shell, index, text)
+        if index == 2 then return end
+        return fs.complete(text, shell.dir(), true, false)
+    end
+)
+```
+
+Dont use:
+
+```lua
+os.loadAPI()
+```
+
+use:
+
+```lua
+dofile(shell.getRunningProgram()).."mypath")`
+```
+
+#### Hardware (Optinal)
+
+The values that you see here are the `default values`
+
+```json5
+"hardware": {
+    "turtle": true,   // Runs on a turtle
+    "poket": true,    // Runs on a poket computer
+    "computer": true, // Runs on a computer
+    "command": false, // Only runs on command capable devices
+    "color": false    // Only runs on advanced devices
+}
+```
 
 ## Third Party Libraries
 
