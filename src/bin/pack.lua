@@ -142,14 +142,21 @@ local function _install(args)
     end
 
     for source,Package in pairs(pack.getPackages()) do
-		for name,p in pairs(Package) do
+		for name,packag in pairs(Package) do
 			if name == args[2] then
+                local satisfied, err = pack.satisfysHardwareRequirements(packag)
+
+                if satisfied == false then
+                    printError(err)
+					return
+                end
+
 				if pack.isPackageInstalled(source.."/"..name) then
 					printError("Package already installed")
 					return
 				end
 				if question("install "..source.."/"..name) then
-					pack.installPackage(source.."/"..name, p, shell)
+					pack.installPackage(source.."/"..name, packag, shell)
 				end
 				return
 			end

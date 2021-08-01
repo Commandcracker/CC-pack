@@ -146,7 +146,7 @@ The values that you see here are the `default values`
 ```json5
 "hardware": {
     "turtle": true,   // Runs on a turtle
-    "poket": true,    // Runs on a poket computer
+    "pocket": true,    // Runs on a pocket computer
     "computer": true, // Runs on a computer
     "command": false, // Only runs on command capable devices
     "color": false    // Only runs on advanced devices

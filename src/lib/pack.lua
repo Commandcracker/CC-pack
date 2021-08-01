@@ -395,5 +395,56 @@ function pack.getPackages()
     return packages
 end
 
+-- HardwareRequirements
+
+function pack.getHardwareRequirements(packag)
+	return packag["hardware"]
+end
+
+function pack.satisfysHardwareRequirements(packag)
+	local requirements = pack.getHardwareRequirements(packag)
+
+	if requirements then
+		if requirements["color"] then
+			if requirements["color"] ~= term.isColor() then
+				return false, "This package requires an advanced device to function properly"
+			end
+		end
+		if requirements["command"] then
+			if requirements["command"] == true and not commands then
+				return false, "This package requires an command capable device"
+			end
+		end
+
+		local computer = false
+
+		if not turtle and not pocket then
+			computer = true
+		end
+
+		if requirements["turtle"] ~= nil then
+			if requirements["turtle"] == false and turtle ~= nil then
+				return false, "This package is not designed to run on a turtle"
+			end
+		end
+
+		if requirements["pocket"] ~= nil then
+			if requirements["pocket"] == false and pocket ~= nil then
+				return false, "This package is not designed to run on a pocket computer"
+			end
+		end
+
+		if requirements["computer"] ~= nil then
+			if requirements["computer"] == false and computer then
+				return false, "This package is not designed to run on a computer"
+			end
+		end
+
+		return true
+	else
+		return true
+	end
+end
+
 pack.json = json
 return pack
