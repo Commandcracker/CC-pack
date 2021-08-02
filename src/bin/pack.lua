@@ -206,11 +206,11 @@ end
 local commands = {
     {"install", "install packages", _install},
     {"show", "show package details", _show},
-    {"search", "search in package descriptions", _search},
+    {"search", "search for a package names", _search},
     {"remove", "remove packages", _remove},
-    {"list", "list packages based on package names", _list},
-	{"fetch", "updats the sources", _fetch_sources},
-	{"add-source", "add asorce to the sources file", _add_source}
+    {"list", "list's packages based on package names", _list},
+	{"fetch", "updates the sources", _fetch_sources},
+	{"add-source", "add a source to the sources file", _add_source}
 }
 
 local function _list_commands()
