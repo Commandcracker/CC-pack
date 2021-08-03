@@ -136,7 +136,7 @@ os.loadAPI()
 use:
 
 ```lua
-dofile(shell.getRunningProgram()).."myapi")
+dofile(fs.getDir(shell.getRunningProgram()).."/myapi")
 ```
 
 #### Hardware (Optinal)
